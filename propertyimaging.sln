@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "propertyimaging", "propertyimaging\propertyimaging.csproj", "{FE5F1081-A46B-489E-A84B-35EFA952C642}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE5F1081-A46B-489E-A84B-35EFA952C642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5F1081-A46B-489E-A84B-35EFA952C642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5F1081-A46B-489E-A84B-35EFA952C642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5F1081-A46B-489E-A84B-35EFA952C642}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA265834-324C-4714-9B54-57AD2B3F75AA}
+	EndGlobalSection
+EndGlobal
