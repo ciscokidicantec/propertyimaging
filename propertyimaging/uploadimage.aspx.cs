@@ -89,7 +89,7 @@ namespace propertyimaging
             {
                 // you have to distinguish here which document, I assume that there is an `id` column
                 cmd.CommandText = "select imageindex,image from images where imageindex=@Id";
-                cmd.Parameters.Add("@Id", MySqlDbType.Int32).Value = 1;
+                cmd.Parameters.Add("@Id", MySqlDbType.Int32).Value = 198;
 
                 int myimageindex = 0;
 
@@ -118,5 +118,68 @@ namespace propertyimaging
             }
         }
 
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+
+            MySql.Data.MySqlClient.MySqlConnection conn;
+            MySql.Data.MySqlClient.MySqlCommand cmd;
+            MySql.Data.MySqlClient.MySqlDataReader myData;
+
+            conn = new MySql.Data.MySqlClient.MySqlConnection();
+            cmd = new MySql.Data.MySqlClient.MySqlCommand();
+
+            string SQL;
+            UInt64 FileSize;
+            byte[] rawData;
+            FileStream fs;
+
+            //string connStr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
+
+
+            conn.ConnectionString = "server=127.0.0.1;uid=root;" +
+                "pwd=Coreldraw1$;database=estateporrtal";
+
+            SQL = "SELECT imageindex, image FROM images";
+
+            try
+            {
+                conn.Open();
+
+                cmd.Connection = conn;
+                cmd.CommandText = SQL;
+
+                myData = cmd.ExecuteReader();
+
+                if (!myData.HasRows)
+                    throw new Exception("There are no BLOBs to save");
+
+                myData.Read();
+
+                //FileSize = myData.GetUInt32(myData.GetOrdinal("file_size"));
+                //FileSize = myData.GetOrdinal("image");
+
+                FileSize = myData.GetUInt64(myData.GetOrdinal("image"));
+                //FileSize = 47000;
+                rawData = new byte[FileSize];
+
+                //myData.GetBytes(myData.GetOrdinal("file"), 0, rawData, 0, (int)FileSize);
+                myData.GetBytes(myData.GetOrdinal("image"), 0, rawData, 0, (int)FileSize);
+
+                fs = new FileStream(@"C:\\compress\\newfile.jpg", FileMode.OpenOrCreate, FileAccess.Write);
+                fs.Write(rawData, 0, (int)FileSize);
+                fs.Close();
+
+               // MessageBox.Show("File successfully written to disk!",
+               //     "Success!", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
+                myData.Close();
+                conn.Close();
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+               // MessageBox.Show("Error " + ex.Number + " has occurred: " + ex.Message,
+               //     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
