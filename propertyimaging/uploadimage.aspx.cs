@@ -9,6 +9,7 @@ using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
+using System.IO;
 
 namespace propertyimaging
 {
@@ -50,19 +51,19 @@ namespace propertyimaging
                 //msgbox("Connecting to MySQL...");
                 conn.Open();
 
-                string rtn = "loadimage";
+                string rtn = "spGETIMAGEBYID";
                 MySqlCommand cmd = new MySqlCommand(rtn, conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@Id", "1");
+                cmd.Parameters.AddWithValue("@Id", "198");
 
                 MySqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
-                    //indeximage = rdr.read("indeximage");
-                    indeximage = rdr.GetInt32(0);
-                    //Messagebox.show("3333");
-                    //Console.WriteLine(rdr[0] + " --- " + rdr[1]);
+                    //indeximage = rdr.GetInt32(0);
+                    indeximage = rdr.GetInt32("imageindex");
+
+                    //Messagebox.show("3333");                    //Console.WriteLine(rdr[0] + " --- " + rdr[1]);
                 }
                 rdr.Close();
             }
@@ -74,5 +75,48 @@ namespace propertyimaging
             conn.Close();
             Console.WriteLine("Done.");
         }
+
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+            string conStr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
+            MySqlConnection con = new MySqlConnection();
+
+            con.ConnectionString = conStr;
+
+            string fileName = Path.GetTempFileName() + ".jpg";
+            con.Open();
+            using (MySqlCommand cmd = con.CreateCommand())
+            {
+                // you have to distinguish here which document, I assume that there is an `id` column
+                cmd.CommandText = "select imageindex,image from images where imageindex=@Id";
+                cmd.Parameters.Add("@Id", MySqlDbType.Int32).Value = 1;
+
+                int myimageindex = 0;
+
+                using (MySqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        myimageindex = dr.GetInt32("imageindex");
+
+                        UInt32 size;
+                        byte[] buffer;
+                        long readBytes = 0;
+                        long index = 0;
+                        using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            size = dr.GetUInt32((int)fs.Length);
+                            buffer = new byte[size];
+                            while ((readBytes = (long)dr.GetBytes(0, index, buffer, 0, (Int32)size)) > 0)
+                            {
+                                fs.Write(buffer, 0, (int)readBytes);
+                                index += readBytes;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
