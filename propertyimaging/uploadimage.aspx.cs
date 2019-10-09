@@ -284,5 +284,22 @@ namespace propertyimaging
                 Response.Redirect(Request.Url.AbsoluteUri);
             }
         }
+
+
+
+        protected void gvImages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           // Protected Sub OnRowDataBound(sender As Object, e As GridViewRowEventArgs)
+   // If e.Row.RowType = DataControlRowType.DataRow Then
+  //      Dim bytes As Byte() = TryCast(TryCast(e.Row.DataItem, DataRowView)("Content"), Byte())
+  //      Dim base64String As String = Convert.ToBase64String(bytes, 0, bytes.Length)
+ //       TryCast(e.Row.FindControl("Image1"), Image).ImageUrl = Convert.ToString("data:image/png;base64,") & base64String
+ //   End If
+//End Sub
+
+
+
+        }
+
     }
 }

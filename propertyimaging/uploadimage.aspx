@@ -31,7 +31,7 @@
 <asp:Button Text="Upload" runat="server" OnClick="UploadFile" />
             <br />
 <hr />
-<asp:GridView ID="gvImages" runat="server" AutoGenerateColumns="false" OnRowDataBound="OnRowDataBound">
+<asp:GridView ID="gvImages" runat="server" AutoGenerateColumns="false" OnRowDataBound="OnRowDataBound" OnSelectedIndexChanged="gvImages_SelectedIndexChanged" Width="850px">
     <Columns>
         <asp:BoundField HeaderText="File Id" DataField="FileId" />
         <asp:BoundField HeaderText="File Name" DataField="FileName" />
