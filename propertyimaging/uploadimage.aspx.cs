@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System;
 using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -17,7 +16,30 @@ namespace propertyimaging
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                this.BindGrid();
+            }
+        }
 
+        private void BindGrid()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.CommandText = "SELECT FileId, FileName, ContentType, Content FROM Files";
+                    cmd.Connection = con;
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        gvImages.DataSource = dt;
+                        gvImages.DataBind();
+                    }
+                }
+            }
         }
 
         protected void Button1_Click(object sender, EventArgs e)
@@ -148,18 +170,38 @@ namespace propertyimaging
                 cmd.Connection = conn;
                 cmd.CommandText = SQL;
 
+//                byte[] bytes = (byte[])cmd.ExecuteScalar();
+//                string strbase64 = Convert.ToBase64String(bytes);
+//                Image1.ImageUrl = "data:Image/png;base64," + strbase64;
+
                 myData = cmd.ExecuteReader();
 
                 if (!myData.HasRows)
                     throw new Exception("There are no BLOBs to save");
 
+                //myData.Read();
+                //byte[] bytes = (byte[])myData.Read("image");
+                //byte[] bytes = (byte[])myData.Read[0];
+
                 myData.Read();
+                int indeximagerow1 = myData.GetInt32(0);
+                UInt64 indeximagerow64 = myData.GetUInt64("image");
+                //   string strbase64 = Convert.ToBase64String(indeximagerow64);
+                //                Image1.ImageUrl = "data:Image/png;base64," + strbase64;
+
+             //   byte[] imageBytes = (byte[])reader[0];
+             //   MemoryStream buf = new MemoryStream(imageBytes);
+             //   Image image = Image.FromStream(buf, true);
+
+                myData.Read();
+                int indeximagerow2 = myData.GetInt32(0);
+
 
                 //FileSize = myData.GetUInt32(myData.GetOrdinal("file_size"));
                 //FileSize = myData.GetOrdinal("image");
 
-                FileSize = myData.GetUInt64(myData.GetOrdinal("image"));
-                //FileSize = 47000;
+                //FileSize = myData.GetUInt64(myData.GetOrdinal("image"));
+                FileSize = 5744000;
                 rawData = new byte[FileSize];
 
                 //myData.GetBytes(myData.GetOrdinal("file"), 0, rawData, 0, (int)FileSize);
@@ -179,6 +221,67 @@ namespace propertyimaging
             {
                // MessageBox.Show("Error " + ex.Number + " has occurred: " + ex.Message,
                //     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        protected void Button4_Click(object sender, EventArgs e)
+        {
+            string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+            string contentType = FileUpload1.PostedFile.ContentType;
+            using (Stream fs = FileUpload1.PostedFile.InputStream)
+            {
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                    string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+                    using (MySqlConnection con = new MySqlConnection(constr))
+                    {
+                        string query = "INSERT INTO Files(FileName, ContentType, Content) VALUES (@FileName, @ContentType, @Content)";
+                        using (MySqlCommand cmd = new MySqlCommand(query))
+                        {
+                            cmd.Connection = con;
+                            cmd.Parameters.AddWithValue("@FileName", filename);
+                            cmd.Parameters.AddWithValue("@ContentType", contentType);
+                            cmd.Parameters.AddWithValue("@Content", bytes);
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+                }
+            }
+            Response.Redirect(Request.Url.AbsoluteUri);
+
+        }
+
+        protected void UploadFile(object sender, EventArgs e)
+        {
+            {
+                string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+                string contentType = FileUpload1.PostedFile.ContentType;
+                using (Stream fs = FileUpload1.PostedFile.InputStream)
+                {
+                    using (BinaryReader br = new BinaryReader(fs))
+                    {
+                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+                        using (MySqlConnection con = new MySqlConnection(constr))
+                        {
+                            string query = "INSERT INTO Files(FileName, ContentType, Content) VALUES (@FileName, @ContentType, @Content)";
+                            using (MySqlCommand cmd = new MySqlCommand(query))
+                            {
+                                cmd.Connection = con;
+                                cmd.Parameters.AddWithValue("@FileName", filename);
+                                cmd.Parameters.AddWithValue("@ContentType", contentType);
+                                cmd.Parameters.AddWithValue("@Content", bytes);
+                                con.Open();
+                                cmd.ExecuteNonQuery();
+                                con.Close();
+                            }
+                        }
+                    }
+                }
+                Response.Redirect(Request.Url.AbsoluteUri);
             }
         }
     }
