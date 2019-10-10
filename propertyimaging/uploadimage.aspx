@@ -31,21 +31,18 @@
 <asp:Button Text="Upload" runat="server" OnClick="UploadFile" />
             <br />
 <hr />
-<asp:GridView ID="gvImages" runat="server" AutoGenerateColumns="false" OnRowDataBound="OnRowDataBound" OnSelectedIndexChanged="gvImages_SelectedIndexChanged" Width="850px">
-    <Columns>
-        <asp:BoundField HeaderText="File Id" DataField="FileId" />
-        <asp:BoundField HeaderText="File Name" DataField="FileName" />
-        <asp:TemplateField HeaderText = "Image">
-            <ItemTemplate>
-                <asp:Image ID="Image1" runat="server" Height="80" Width="80" />
-            </ItemTemplate>
-        </asp:TemplateField>
-    </Columns>
-</asp:GridView>
-
-
-
-        </div>
-    </form>
+    <asp:GridView ID="gvImages" runat="server" AutoGenerateColumns="False"  OnRowDataBound="OnRowDataBound" OnSelectedIndexChanged="gvImages_SelectedIndexChanged" Width="1737px">
+        <Columns>
+            <asp:BoundField HeaderText="File Id" DataField="FileId" />
+            <asp:BoundField HeaderText="File Name" DataField="FileName" />
+            <asp:TemplateField HeaderText = "Image">
+                <ItemTemplate>
+                    <asp:Image ID="Image1" runat="server" Height="161px" />
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+    </asp:GridView>
+  </div>
+ </form>
 </body>
 </html>

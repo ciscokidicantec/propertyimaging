@@ -24,7 +24,10 @@ namespace propertyimaging
 
         private void BindGrid()
         {
-            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+            string constr = ConfigurationManager.ConnectionStrings["estateportalConnectionString"].ConnectionString;
+            //server = localhost; user id = root; persistsecurityinfo = True; database = estateporrtal
+            //string constr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
+
             using (MySqlConnection con = new MySqlConnection(constr))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -53,7 +56,7 @@ namespace propertyimaging
 
             //MySqlConnection myconnection = new MySqlConnection();
 
-            //string connStr = ConfigurationManager.ConnectionStrings["estateportalConnectionString"].ConnectionString;
+            string connStr = ConfigurationManager.ConnectionStrings["estateportalConnectionString"].ConnectionString;
             //string connStr = "server=localhost;user id=root;password=Coreldraw1$;persistsecurityinfo=True;database=estateporrtal;" + "providerName=MySql.Data.MySqlClient";
             //string connStr = "server=localhost;user id=root;password=Coreldraw1$;persistsecurityinfo=True;database=estateporrtal;" + "provider=MySql.Data.MySqlClient";
             //myconnection.ConnectionString = connStr;
@@ -62,7 +65,7 @@ namespace propertyimaging
             //string connStr = "server=localhost;user id=root;password=Coreldraw1$;persistsecurityinfo=True;database=estateporrtal" + "providerName = 'MySql.Data.MySqlClient'";
             //< add name = "qbankEntities" connectionString = "metadata=res://*/qbankModel.csdl|res://*/qbankModel.ssdl|res://*/qbankModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=localhost;Initial Catalog=qbank;Persist Security Info=True;User ID=**;Password=****;MultipleActiveResultSets=True&quot;" providerName = "System.Data.EntityClient" />
 
-            string connStr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
+            //string connStr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
             MySqlConnection conn = new MySqlConnection();
             conn.ConnectionString = connStr;
 
@@ -259,12 +262,15 @@ namespace propertyimaging
             {
                 string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
                 string contentType = FileUpload1.PostedFile.ContentType;
+                int contentsize = FileUpload1.PostedFile.ContentLength;
                 using (Stream fs = FileUpload1.PostedFile.InputStream)
                 {
                     using (BinaryReader br = new BinaryReader(fs))
                     {
                         byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                        string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+                        //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+                        string constr = "User Id = root; Password = Coreldraw1$; Host = localhost; Database = estateporrtal";
+
                         using (MySqlConnection con = new MySqlConnection(constr))
                         {
                             string query = "INSERT INTO Files(FileName, ContentType, Content) VALUES (@FileName, @ContentType, @Content)";
@@ -285,20 +291,19 @@ namespace propertyimaging
             }
         }
 
+        protected void OnRowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                byte[] bytes = (byte[])(e.Row.DataItem as DataRowView)["Content"];
+                string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
+                (e.Row.FindControl("Image1") as Image).ImageUrl = "data:image/png;base64," + base64String;
+            }
+        }
 
 
         protected void gvImages_SelectedIndexChanged(object sender, EventArgs e)
         {
-           // Protected Sub OnRowDataBound(sender As Object, e As GridViewRowEventArgs)
-   // If e.Row.RowType = DataControlRowType.DataRow Then
-  //      Dim bytes As Byte() = TryCast(TryCast(e.Row.DataItem, DataRowView)("Content"), Byte())
-  //      Dim base64String As String = Convert.ToBase64String(bytes, 0, bytes.Length)
- //       TryCast(e.Row.FindControl("Image1"), Image).ImageUrl = Convert.ToString("data:image/png;base64,") & base64String
- //   End If
-//End Sub
-
-
-
         }
 
     }
