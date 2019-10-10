@@ -37,7 +37,7 @@
             <asp:BoundField HeaderText="File Name" DataField="FileName" />
             <asp:TemplateField HeaderText = "Image">
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" Height="161px" />
+                    <asp:Image ID="Image1" runat="server" Height="800px" />
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>
